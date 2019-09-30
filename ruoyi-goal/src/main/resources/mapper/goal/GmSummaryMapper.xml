@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.goal.mapper.GmSummaryMapper">
+    
+    <resultMap type="GmSummary" id="GmSummaryResult">
+        <result property="id"    column="id"    />
+        <result property="recordVersion"    column="record_version"    />
+        <result property="sysCreateTime"    column="sys_create_time"    />
+        <result property="sysCreateBy"    column="sys_create_by"    />
+        <result property="sysUpdateTime"    column="sys_update_time"    />
+        <result property="sysUpdateBy"    column="sys_update_by"    />
+        <result property="summaryTime"    column="summary_time"    />
+        <result property="summary"    column="summary"    />
+    </resultMap>
+
+    <sql id="selectGmSummaryVo">
+        select id, record_version, sys_create_time, sys_create_by, sys_update_time, sys_update_by, summary_time, summary from gm_summary
+    </sql>
+
+    <select id="selectGmSummaryList" parameterType="GmSummary" resultMap="GmSummaryResult">
+        <include refid="selectGmSummaryVo"/>
+        <where>  
+            <if test="recordVersion != null "> and record_version = #{recordVersion}</if>
+            <if test="sysCreateTime != null "> and sys_create_time = #{sysCreateTime}</if>
+            <if test="sysCreateBy != null "> and sys_create_by = #{sysCreateBy}</if>
+            <if test="sysUpdateTime != null "> and sys_update_time = #{sysUpdateTime}</if>
+            <if test="sysUpdateBy != null "> and sys_update_by = #{sysUpdateBy}</if>
+            <if test="summaryTime != null ">and DATE_FORMAT(summary_time, '%Y%m' ) = DATE_FORMAT( #{summaryTime}, '%Y%m' )</if>
+            <if test="params.startTime != null and params.endTime != null "> and summary_time between #{params.startTime} and #{params.endTime}</if>
+            <if test="summary != null  and summary != ''"> and summary = #{summary}</if>
+        </where>
+        order by summary_time
+    </select>
+    
+    <select id="selectGmSummaryById" parameterType="Long" resultMap="GmSummaryResult">
+        <include refid="selectGmSummaryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGmSummary" parameterType="GmSummary" useGeneratedKeys="true" keyProperty="id">
+        insert into gm_summary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version,</if>
+            <if test="sysCreateTime != null ">sys_create_time,</if>
+            <if test="sysCreateBy != null ">sys_create_by,</if>
+            <if test="sysUpdateTime != null ">sys_update_time,</if>
+            <if test="sysUpdateBy != null ">sys_update_by,</if>
+            <if test="summaryTime != null ">summary_time,</if>
+            <if test="summary != null  and summary != ''">summary,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">#{recordVersion},</if>
+            <if test="sysCreateTime != null ">#{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">#{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">#{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">#{sysUpdateBy},</if>
+            <if test="summaryTime != null ">#{summaryTime},</if>
+            <if test="summary != null  and summary != ''">#{summary},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGmSummary" parameterType="GmSummary">
+        update gm_summary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version = #{recordVersion},</if>
+            <if test="sysCreateTime != null ">sys_create_time = #{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">sys_create_by = #{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">sys_update_time = #{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">sys_update_by = #{sysUpdateBy},</if>
+            <if test="summaryTime != null ">summary_time = #{summaryTime},</if>
+            <if test="summary != null  and summary != ''">summary = #{summary},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGmSummaryById" parameterType="Long">
+        delete from gm_summary where id = #{id}
+    </delete>
+
+    <delete id="deleteGmSummaryByIds" parameterType="String">
+        delete from gm_summary where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

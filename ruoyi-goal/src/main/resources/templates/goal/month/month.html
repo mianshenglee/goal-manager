@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('目标列表')"/>
+    <link th:href="@{/ajax/libs/bootstrap-slider/css/bootstrap-slider.min.css}" rel="stylesheet"/>
+    <link th:href="@{/goal/css/goal.css}" rel="stylesheet"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 goal-block">
+            <div class="col-sm-4">
+                <div class="card bg-primary">
+                    <div class="card-body">
+                        <div class="card-center">
+                            <p class="h5 m-t-0">当月目标数/完成数</p>
+                            <p class="h3 m-t-0" th:text="${goalStatic.totalGoal}+'/'+${goalStatic.doneGoal}">10/5个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card bg-success">
+                    <div class="card-body">
+                        <div class="card-center">
+                            <p class="h5 m-t-0">当月想法数</p>
+                            <p class="h3 m-t-0" th:text="${goalStatic.ideaCount}">3个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card bg-danger">
+                    <div class="card-body">
+                        <div class="card-center">
+                            <p class="h5 m-t-0">当月热点数</p>
+                            <p class="h3 m-t-0" th:text="${goalStatic.hotspotCount}">1个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 goal-block">
+            <div class="col-sm-4 filter-condition month-btn active">
+                <a class="btn btn-primary prev-month" data-value="prev"><i class="fa fa-angle-left"></i>&nbsp;上个月</a>
+                <a class="btn btn-success current-month active" data-value="current"><i class="fa fa-angle-up"></i>&nbsp;当前月</a>
+                <a class="btn btn-primary next-month" data-value="next"><i class="fa fa-angle-right"></i>&nbsp;下个月</a>
+            </div>
+            <div class="col-sm-5 filter-condition time-range">
+                <p class="goal-filter-select-time-text">时间范围：</p>
+                <input type="text" class="time-input" data-type="month" data-format="yyyy-MM" id="startTime" placeholder="开始月份"/>
+                <span>~</span>
+                <input type="text" class="time-input" data-type="month" data-format="yyyy-MM" id="endTime" placeholder="结束月份"/>
+                <button class="btn btn-primary m-l-10 time-range-search" type="button"><i class="fa fa-search"></i>&nbsp;查询</button>
+            </div>
+            <div class="col-sm-3 filter-condition tatus-btn-group active">
+                <div class="btn-group">
+                    <button class="btn btn-success active" type="button" data-value="all">全部</button>
+                    <button class="btn btn-white" type="button" data-value="done">已完成</button>
+                    <button class="btn btn-white" type="button" data-value="notDone">未完成</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 goal-block">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#goal-tab" data-toggle="tab">目标</a></li>
+                <li><a href="#idea-tab" data-toggle="tab">想法</a></li>
+                <li><a href="#summary-tab" data-toggle="tab">总结</a></li>
+                <li><a href="#hotspot-tab" data-toggle="tab">热点</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="tab-pane active" id="goal-tab" th:fragment="goal-tab-fragment">
+                    <div class="col-sm-12" >
+                        <div class="col-sm-12 oper-info">
+                            <div class="col-sm-2 text-center bold bg-info pull-left currentShowDate" th:text="${currentShowDate}">month</div>
+                            <div class="col-sm-4 pull-right">
+                                <a class="btn btn-info pull-right copy-last-month" copy-type="goal" title="复制上月未完成内容">复制上月</a>
+                            </div>
+                        </div>
+
+                        <div class="ibox m-t-10" th:each="goalType: ${goalTypeList}">
+                            <div class="ibox-title" goal-type="" th:attr="goal-type=${goalType.dictValue}">
+                                <h5 th:text="${goalType.dictLabel}"></h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row goal-list-row" th:each="goal: ${goalMap[goalType.dictValue]}">
+                                    <input name="id" th:value="${goal.id}" type="hidden">
+                                    <input name="recordVersion" th:value="${goal.recordVersion}" type="hidden">
+                                    <input name="goalPhase" th:value="${goal.goalPhase}" type="hidden">
+                                    <input name="goalType" th:value="${goal.goalType}" type="hidden">
+                                    <div class="row col-sm-5">
+                                        <div class="goal-content-div">
+                                            <span class="badge" th:classappend="${goal.isExtra == '1'}?'':'hidden'">extra</span>
+                                            <span class="goal-content" th:text="${goal.goalContent}">目标内容</span>
+                                        </div>
+                                        <div class="isExtraCheckBox checkbox col-sm-3 m-t-0 hidden">
+                                            <label> <input name="isExtra" class="is-extra" type="checkbox" th:attr="checked=${goal.isExtra eq '1'?true:false}">计划外</label>
+                                        </div>
+                                        <input name="goalContent" placeholder="请输入目标内容" class="col-sm-9 form-control  hidden" type="text" maxlength="200" required style="width: 75%;margin-top: -8px;">
+                                    </div>
+                                    <div class="row col-sm-4">
+                                        <div class="checkbox col-sm-3 m-t-0">
+                                            <label> <input name="goal-done" class="goal-done" type="checkbox" th:attr="checked=${goal.process==100?true:false}">完成</label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <input name="goalProcess" class="goal-process-slider" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="10" data-slider-value="0" th:attr="data-slider-value=${goal.process}"/>
+                                            <span class="slider-value-span" th:text="${goal.process}">0</span>
+                                            <span>%</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <div class="goal-time" th:text="${#dates.format(goal.goalTime,'yyyy-MM')}">2019-09</div>
+                                        <input name="goalTime" type="text" class="time-input hidden" data-type="month" placeholder="目标月份" style="padding-left: 3px;"/>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div style="text-align: center; ">
+                                            <a class="btn btn-success btn-xs goal-edit" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>编辑</a>
+                                            <a class="btn btn-success btn-xs goal-save hidden" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>保存</a>
+                                            <a class="btn btn-danger btn-xs goal-delete" href="javascript:void(0)">
+                                                <i class="fa fa-remove"></i>删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row goal-add-row"><a class="center-icon goal-add"><i class="fa fa-plus fa-1-5x m-r-10"></i>添加目标</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="idea-tab" th:fragment="idea-tab-fragment">
+                    <div class="col-sm-12" >
+                        <div class="col-sm-12 oper-info">
+                            <div class="col-sm-2 text-center bold bg-info pull-left currentShowDate" th:text="${currentShowDate}">month</div>
+                            <div class="col-sm-4 pull-right">
+                                <a class="btn btn-info pull-right copy-last-month" copy-type="idea" title="复制上月未完成内容">复制上月</a>
+                            </div>
+                        </div>
+                        <div class="ibox m-t-10">
+                            <div class="ibox-content">
+                                <div class="row idea-list-row" th:each="idea: ${ideaList}">
+                                    <input name="id" th:value="${idea.id}" type="hidden">
+                                    <input name="recordVersion" th:value="${idea.recordVersion}" type="hidden">
+                                    <div class="col-sm-2">
+                                        <div class="idea-type bg_primary" type-value="" th:attr="type-value=${idea.type}" th:text="${@dict.getLabel('idea_type',idea.type)}">--</div>
+                                        <select name="ideaType" th:with="type=${@dict.getType('idea_type')}" class="hidden">
+                                            <option value="">--</option>
+                                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="row col-sm-7">
+                                        <div class="idea-content-div">
+                                            <span class="idea-content" th:text="${idea.content}">想法内容</span>
+                                        </div>
+                                        <input name="ideaContent" placeholder="请输入想法内容" class="col-sm-9 form-control  hidden" type="text" maxlength="200" required style="width: 100%;margin-top: -1px;">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <div class="idea-time" th:text="${#dates.format(idea.ideaTime,'yyyy-MM')}">2019-09</div>
+                                        <input name="ideaTime" type="text" class="time-input hidden" data-type="month" placeholder="目标月份" style="padding-left: 3px;"/>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div style="text-align: center; ">
+                                            <a class="btn btn-success btn-xs idea-edit" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>编辑</a>
+                                            <a class="btn btn-success btn-xs idea-save hidden" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>保存</a>
+                                            <a class="btn btn-danger btn-xs idea-delete" href="javascript:void(0)">
+                                                <i class="fa fa-remove"></i>删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row idea-add-row"><a class="center-icon idea-add"><i class="fa fa-plus fa-1-5x m-r-10"></i>添加想法</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="summary-tab"  th:fragment="summary-tab-fragment">
+                    <div class="col-sm-12" >
+                        <div class="col-sm-12 oper-info">
+                            <div class="col-sm-2 text-center bold bg-info pull-left currentShowDate" th:text="${currentShowDate}">month</div>
+                            <div class="col-sm-4 pull-right">
+                                <a class="btn btn-info pull-right copy-last-month" copy-type="summary" title="复制上月未完成内容">复制上月</a>
+                            </div>
+                        </div>
+                        <div class="ibox m-t-10">
+                            <div class="ibox-content">
+                                <div class="row summary-list-row" th:each="summary: ${summaryList}">
+                                    <input name="id" th:value="${summary.id}" type="hidden">
+                                    <input name="recordVersion" th:value="${summary.recordVersion}" type="hidden">
+                                    <div class="col-sm-9">
+                                        <textarea class="summary-input" rows="8" placeholder="总结内容" th:text="${summary.summary}"></textarea>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <input name="summaryTime" type="text" class="time-input" data-type="month" placeholder="所属月份"
+                                               th:value="${#dates.format(summary.summaryTime,'yyyy-MM')}" style="margin-top:80px; padding-left: 3px;"/>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div style="text-align: center; margin-top:80px;">
+                                            <a class="btn btn-success btn-xs summary-save" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>保存</a>
+                                            <a class="btn btn-danger btn-xs summary-delete" href="javascript:void(0)">
+                                                <i class="fa fa-remove"></i>删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row summary-add-row"><a class="center-icon summary-add" th:classappend="${summaryList.size()>0?'hidden':''}"><i class="fa fa-plus fa-1-5x m-r-10"></i>添加总结</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="hotspot-tab" th:fragment="hotspot-tab-fragment">
+                    <div class="col-sm-12" >
+                        <div class="col-sm-12 oper-info">
+                            <div class="col-sm-2 text-center bold bg-info pull-left currentShowDate" th:text="${currentShowDate}">month</div>
+                            <div class="col-sm-4 pull-right">
+                                <a class="btn btn-info pull-right copy-last-month" copy-type="idea" title="复制上月未完成内容">复制上月</a>
+                            </div>
+                        </div>
+                        <div class="ibox m-t-10">
+                            <div class="ibox-content">
+                                <div class="row hotspot-list-row" th:each="hotspot: ${hotspotList}">
+                                    <input name="id" th:value="${hotspot.id}" type="hidden">
+                                    <input name="recordVersion" th:value="${hotspot.recordVersion}" type="hidden">
+                                    <div class="row col-sm-5">
+                                        <div class="hotspot-title-div">
+                                            <span class="hotspot-title" th:text="${hotspot.title}">热点标题</span>
+                                        </div>
+                                        <input name="hotspotTitle" placeholder="请输入热点标题" class="col-sm-9 form-control  hidden" type="text" maxlength="300" required style="width: 100%;margin-top: -1px;">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="hotspot-link-div">
+                                            <span class="hotspot-link" th:text="${hotspot.link}">热点链接</span>
+                                        </div>
+                                        <input name="hotspotLink" placeholder="请输入热点链接" class="col-sm-9 form-control  hidden" type="text" maxlength="200" required style="width: 100%;margin-top: -1px;">
+                                    </div>
+
+                                    <div class="col-sm-1">
+                                        <div class="hotspot-time" th:text="${#dates.format(hotspot.hotTime,'yyyy-MM')}">2019-09</div>
+                                        <input name="hotTime" type="text" class="time-input hidden" data-type="month" placeholder="所属月份" style="padding-left: 3px;"/>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div style="text-align: center; ">
+                                            <a class="btn btn-success btn-xs hotspot-edit" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>编辑</a>
+                                            <a class="btn btn-success btn-xs hotspot-save hidden" href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>保存</a>
+                                            <a class="btn btn-danger btn-xs hotspot-delete" href="javascript:void(0)">
+                                                <i class="fa fa-remove"></i>删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row hotspot-add-row"><a class="center-icon hotspot-add"><i class="fa fa-plus fa-1-5x m-r-10"></i>添加热点</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:src="@{/ajax/libs/bootstrap-slider/bootstrap-slider.min.js}"></script>
+<script th:src="@{/ajax/libs/jsrender/jsrender.min.js}"></script>
+<script th:src="@{/goal/js/goal.js}"></script>
+<th:block th:replace="goal/goalfragment :: goal-list-add-row"/>
+<th:block th:replace="goal/goalfragment :: idea-list-add-row"/>
+<th:block th:replace="goal/goalfragment :: summary-list-add-row"/>
+<th:block th:replace="goal/goalfragment :: hotspot-list-add-row"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('goal:month:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('goal:month:remove')}]];
+    // var goalPhaseDatas = [[${@dict.getType('goal_phase')}]];
+    // var goalTypeDatas = [[${@dict.getType('goal_type')}]];
+    // var isDeletedDatas = [[${@dict.getType('is_deleted')}]];
+    // var isExtraDatas = [[${@dict.getType('is_extra')}]];
+    var ideaTypeDatas = [[${@dict.getType('idea_type')}]];
+    var prefix = ctx + "goal/month";
+    var ideaPrefix = ctx + "goal/idea";
+    var summaryPrefix = ctx + "goal/summary";
+    var hotspotPrefix = ctx + "goal/hotspot";
+
+    $(function () {
+        /**目标增删改查**/
+        //滑动块
+        $(".goal-process-slider").slider({
+            tooltip: 'show'
+        });
+        $("body").on("change",".goal-process-slider", function(slideEvt) {
+            $goalRow = $(this).parents(".row").eq(1);
+            var process = slideEvt.value.newValue;
+            //保存到后端
+            var goalId = $goalRow.find("input[name='id']").val();
+            var goalRecordVersion = $goalRow.find("input[name='recordVersion']").val();
+            var gmGoal = {
+                id:goalId,
+                recordVersion:goalRecordVersion,
+                process:process
+            };
+            $.operate.saveModalWithSeccessCallback(prefix + "/edit", gmGoal,changeGoalProcess($goalRow,process));
+        });
+
+        //目标编辑
+        $("body").on("click",".goal-edit",function(){
+            var $goalRow = $(this).parents(".goal-list-row");
+            //目标内容
+            var $goalContentElem = $goalRow.find(".goal-content");
+            var goalCotent = $goalContentElem.text();
+            $goalRow.find(".goal-content").hide();
+            $goalRow.find(".badge").addClass("hidden");
+            $goalRow.find("input[name='goalContent']").removeClass("hidden").val(goalCotent);
+            $goalRow.find(".isExtraCheckBox").removeClass("hidden");
+            //时间
+            var $goalTimeElem = $goalRow.find(".goal-time");
+            var goalTime = $goalTimeElem.text();
+            $goalTimeElem.hide();
+            $goalRow.find("input[name='goalTime']").removeClass("hidden").val(goalTime);
+            //按钮
+            $(this).hide();
+            $(this).siblings(".goal-save").removeClass("hidden");
+            // $(this).siblings(".goal-delete").attr("disabled","disabled");
+        });
+        //目标保存
+        $("body").on("click",".goal-save",function(){
+            var $goalRow = $(this).parents(".goal-list-row");
+            var goalContent = $goalRow.find("input[name='goalContent']").val();
+            var goalTime = $goalRow.find("input[name='goalTime']").val();
+            if($.common.isEmpty(goalContent)){
+                $.modal.alertWarning("目标内容不能为空！");
+                return;
+            }
+            if($.common.isEmpty(goalTime)){
+                $.modal.alertWarning("目标时间不能为空！");
+                return;
+            }
+
+            //callback
+            var goalId = $goalRow.find("input[name='id']").val();
+            var goalRecordVersion = $goalRow.find("input[name='recordVersion']").val();
+            var goalPhase = $goalRow.find("input[name='goalPhase']").val();
+            var goalType = $goalRow.find("input[name='goalType']").val();
+            var isExtra = $goalRow.find("input[name='isExtra']").prop("checked")?"1":"0";
+            var theSlider = $goalRow.find(".goal-process-slider").slider();
+            var processValue = theSlider.slider('getValue');
+            var gmGoal = {
+                id:goalId,
+                recordVersion:goalRecordVersion,
+                goalPhase:goalPhase,
+                goalType:goalType,
+                goalTime:goalTime,
+                goalContent:goalContent,
+                process:processValue,
+                isDeleted:0,
+                isExtra:isExtra
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(prefix + "/edit", gmGoal,filter,'goal');
+        })
+
+        //目标删除
+        $("body").on("click",".goal-delete",function(){
+            $deleteBtn = $(this);
+            $.modal.confirm("确定删除该条目标吗？", function() {
+                var $goalRow = $deleteBtn.parents(".goal-list-row");
+                var goalId = $goalRow.find("input[name='id']").val();
+                var data = {
+                    ids:goalId
+                };
+                var filter = buildFilter(true);
+                refreshTabAfterAjaxSuccess(prefix + "/remove", data,filter,'goal');
+            });
+        })
+        //目标取消
+        $("body").on("click",".goal-cancel",function(){
+            $(this).parents(".goal-list-row").first().remove();
+        })
+        //目标添加
+        $("body").on("click",".goal-add",function(){
+            var goalType = $(this).parents(".ibox").first().find(".ibox-title").attr("goal-type");
+            var tmpl = $.templates("#goal-list-row"); // Get compiled template
+            var data = {
+                goalContent:"",
+                curDate: getNowFormatMonth(),
+                recordVersion:1,
+                goalPhase:"month",
+                goalType:goalType};           // Define data
+            var html = tmpl.render(data);      // Render template using data - as HTML string
+            $(this).parent(".goal-add-row").before(html);           // Insert HTML string into DOM
+            //重新渲染控件
+            $(".goal-process-slider").slider();
+            bindTimeInput();
+        })
+
+        //目标添加保存
+        $("body").on("click",".goal-add-save",function(){
+            var $goalRow = $(this).parents(".goal-list-row");
+            var goalContent = $goalRow.find("input[name='goalContent']").val();
+            var goalTime = $goalRow.find("input[name='goalTime']").val();
+            if($.common.isEmpty(goalContent)){
+                $.modal.alertWarning("目标内容不能为空！");
+                return;
+            }
+            if($.common.isEmpty(goalTime)){
+                $.modal.alertWarning("目标时间不能为空！");
+                return;
+            }
+            //callback
+            var goalRecordVersion = $goalRow.find("input[name='recordVersion']").val();
+            var goalPhase = $goalRow.find("input[name='goalPhase']").val();
+            var goalType = $goalRow.find("input[name='goalType']").val();
+            var isExtra = $goalRow.find("input[name='isExtra']").prop("checked")?"1":"0";
+            var theSlider = $goalRow.find(".goal-process-slider").slider();
+            var processValue = theSlider.slider('getValue');
+            var gmGoal = {
+                recordVersion:goalRecordVersion,
+                goalPhase:goalPhase,
+                goalType:goalType,
+                goalTime:goalTime,
+                goalContent:goalContent,
+                process:processValue,
+                isDeleted:0,
+                isExtra:isExtra
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(prefix + "/add", gmGoal,filter,'goal');
+        })
+
+        //目标完成
+        $("body").on("click",".goal-done",function(){
+            if($(this).prop("checked")) {
+                $goalRow = $(this).parents(".row").eq(1);
+                //调整滑动块
+                var theSlider = $goalRow.find(".goal-process-slider").slider();
+                theSlider.slider('setValue',100,true,true);
+            }
+        });
+
+        /**想法增删改查**/
+        //想法添加
+        $("body").on("click",".idea-add",function(){
+            var tmpl = $.templates("#idea-list-row"); // Get compiled template
+            var data = {
+                typeList:ideaTypeDatas,
+                ideaContent:'',
+                curDate: getNowFormatMonth(),
+            };// Define data
+            var html = tmpl.render(data);      // Render template using data - as HTML string
+            $(this).parent(".idea-add-row").before(html);           // Insert HTML string into DOM
+            //绑定
+            bindTimeInput();
+        })
+
+        //想法添加保存
+        $("body").on("click",".idea-add-save",function(){
+            var $ideaRow = $(this).parents(".idea-list-row");
+            var ideaContent = $ideaRow.find("input[name='ideaContent']").val();
+            var ideaType = $ideaRow.find("select[name='ideaType']").val();
+            if($.common.isEmpty(ideaContent)){
+                $.modal.alertWarning("想法内容不能为空！");
+                return;
+            }
+
+            var ideaTime = $ideaRow.find("input[name='ideaTime']").val();
+            if($.common.isEmpty(ideaTime)){
+                $.modal.alertWarning("想法时间不能为空！");
+                return;
+            }
+
+            //callback
+            var idea = {
+                type:ideaType,
+                content:ideaContent,
+                ideaTime:ideaTime,
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(ideaPrefix + "/add", idea,filter,'idea');
+        })
+        //想法取消
+        $("body").on("click",".idea-cancel",function(){
+            $(this).parents(".idea-list-row").first().remove();
+        })
+        //想法删除
+        $("body").on("click",".idea-delete",function(){
+            $deleteBtn = $(this);
+            $.modal.confirm("确定删除该条记录吗？", function() {
+                var $ideaRow = $deleteBtn.parents(".idea-list-row");
+                var ideaId = $ideaRow.find("input[name='id']").val();
+                var data = {
+                    ids:ideaId
+                };
+                var filter = buildFilter(true);
+                refreshTabAfterAjaxSuccess(ideaPrefix + "/remove", data,filter,'idea');
+            });
+        })
+        //想法编辑
+        $("body").on("click",".idea-edit",function(){
+            var $ideaRow = $(this).parents(".idea-list-row");
+            //目标内容
+            var $ideaContentElem = $ideaRow.find(".idea-content");
+            var ideaCotent = $ideaContentElem.text();
+            $ideaContentElem.hide();
+            $ideaRow.find("input[name='ideaContent']").removeClass("hidden").val(ideaCotent);
+            //类型
+            var $ideaTypeElem = $ideaRow.find(".idea-type");
+            // var typeLable = $ideaTypeElem.text();
+            var type = $ideaTypeElem.attr("type-value");
+            $ideaTypeElem.hide();
+            $ideaRow.find("select[name='ideaType']").removeClass("hidden").find("option[value='"+type+"']").attr("selected","selected");
+            //时间
+            var $ideaTimeElem = $ideaRow.find(".idea-time");
+            var ideaTime = $ideaTimeElem.text();
+            $ideaTimeElem.hide();
+            $ideaRow.find("input[name='ideaTime']").removeClass("hidden").val(ideaTime);
+            //按钮
+            $(this).hide();
+            $(this).siblings(".idea-save").removeClass("hidden");
+            // $(this).siblings(".goal-delete").attr("disabled","disabled");
+        });
+        //想法保存
+        $("body").on("click",".idea-save",function(){
+            var $ideaRow = $(this).parents(".idea-list-row");
+            var ideaContent = $ideaRow.find("input[name='ideaContent']").val();
+            var ideaType = $ideaRow.find("select[name='ideaType']").val();
+            if($.common.isEmpty(ideaContent)){
+                $.modal.alertWarning("想法内容不能为空！");
+                return;
+            }
+            var ideaTime = $ideaRow.find("input[name='ideaTime']").val();
+            if($.common.isEmpty(ideaTime)){
+                $.modal.alertWarning("想法时间不能为空！");
+                return;
+            }
+
+            //callback
+            var ideaId = $ideaRow.find("input[name='id']").val();
+            var ideaObject = {
+                id:ideaId,
+                type:ideaType,
+                content:ideaContent,
+                ideaTime:ideaTime,
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(ideaPrefix + "/edit", ideaObject,filter,'idea');
+        })
+
+        /**总结增删改查**/
+        //总结添加
+        $("body").on("click",".summary-add",function(){
+            var tmpl = $.templates("#summary-list-row");
+            var data = {
+                curDate: getNowFormatMonth(),
+            };// Define data
+            var html = tmpl.render(data);
+            $(this).parent(".summary-add-row").before(html);
+            $(".summary-add").hide();
+
+            //绑定
+            bindTimeInput();
+        })
+        //总结保存
+        $("body").on("click",".summary-save",function(){
+            var $summaryRow = $(this).parents(".summary-list-row");
+            var id = $summaryRow.find("input[name='id']").val();
+            var summaryContent = $summaryRow.find("textarea.summary-input").val();
+            var summaryTime = $summaryRow.find("input[name='summaryTime']").val();
+            if($.common.isEmpty(summaryTime)){
+                $.modal.alertWarning("总结时间不能为空！");
+                return;
+            }
+
+            //callback
+            var summary = {
+                id:id,
+                summary:summaryContent,
+                summaryTime:summaryTime,
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(summaryPrefix + "/save", summary,filter,'summary');
+        })
+        //总结删除
+        $("body").on("click",".summary-delete",function(){
+            $deleteBtn = $(this);
+            $.modal.confirm("确定删除该条总结吗？", function() {
+                var $summaryRow = $deleteBtn.parents(".summary-list-row");
+                var summaryId = $summaryRow.find("input[name='id']").val();
+                var data = {
+                    ids:summaryId
+                };
+                var filter = buildFilter(true);
+                refreshTabAfterAjaxSuccess(summaryPrefix + "/remove", data,filter,'summary');
+            });
+        })
+
+
+        /**热点增删改查**/
+        //热点添加
+        $("body").on("click",".hotspot-add",function(){
+            var tmpl = $.templates("#hotspot-list-row");
+            var data = {
+                hotspotTitle:'',
+                hotspotLink:'',
+                curDate: getNowFormatMonth(),
+            };
+            var html = tmpl.render(data);
+            $(this).parent(".hotspot-add-row").before(html);
+            //绑定
+            bindTimeInput();
+        })
+
+        //热点添加保存
+        $("body").on("click",".hotspot-add-save",function(){
+            var $hotspotRow = $(this).parents(".hotspot-list-row");
+            var hotspotTitle = $hotspotRow.find("input[name='hotspotTitle']").val();
+            var hotspotLink = $hotspotRow.find("input[name='hotspotLink']").val();
+            if($.common.isEmpty(hotspotTitle)){
+                $.modal.alertWarning("热点标题不能为空！");
+                return;
+            }else if(hotspotTitle.length > 300){
+                $.modal.alertWarning("标题太长，不能超过300字符！");
+                return;
+            }
+
+            if(hotspotLink.length > 200){
+                $.modal.alertWarning("链接太长，不能超过200字符！");
+                return;
+            }
+
+            var hotTime = $hotspotRow.find("input[name='hotTime']").val();
+            if($.common.isEmpty(hotTime)){
+                $.modal.alertWarning("热点时间不能为空！");
+                return;
+            }
+
+            //callback
+            var idea = {
+                title:hotspotTitle,
+                link:hotspotLink,
+                hotTime:hotTime
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(hotspotPrefix + "/add", idea,filter,'hotspot');
+        })
+        //热点取消
+        $("body").on("click",".hotspot-cancel",function(){
+            $(this).parents(".hotspot-list-row").first().remove();
+        })
+        //热点删除
+        $("body").on("click",".hotspot-delete",function(){
+            $deleteBtn = $(this);
+            $.modal.confirm("确定删除该条热点吗？", function() {
+                var $hotspotRow = $deleteBtn.parents(".hotspot-list-row");
+                var id = $hotspotRow.find("input[name='id']").val();
+                var data = {
+                    ids:id
+                };
+                var filter = buildFilter(true);
+                refreshTabAfterAjaxSuccess(hotspotPrefix + "/remove", data,filter,'hotspot');
+            });
+        })
+        //热点编辑
+        $("body").on("click",".hotspot-edit",function(){
+            var $hotspotRow = $(this).parents(".hotspot-list-row");
+            //热点标题
+            var $hotspotTitleElem = $hotspotRow.find(".hotspot-title");
+            var hotspotTitle = $hotspotTitleElem.text();
+            $hotspotTitleElem.hide();
+            $hotspotRow.find("input[name='hotspotTitle']").removeClass("hidden").val(hotspotTitle);
+            //热点链接
+            var $hotspotLinkElem = $hotspotRow.find(".hotspot-link");
+            var hotspotLink = $hotspotLinkElem.text();
+            $hotspotLinkElem.hide();
+            $hotspotRow.find("input[name='hotspotLink']").removeClass("hidden").val(hotspotLink);
+            //时间
+            var $hotTimeElem = $hotspotRow.find(".hotspot-time");
+            var hotTime = $hotTimeElem.text();
+            $hotTimeElem.hide();
+            $hotspotRow.find("input[name='hotTime']").removeClass("hidden").val(hotTime);
+            //按钮
+            $(this).hide();
+            $(this).siblings(".hotspot-save").removeClass("hidden");
+        });
+        //热点保存
+        $("body").on("click",".hotspot-save",function(){
+            var $hotspotRow = $(this).parents(".hotspot-list-row");
+            var hotspotTitle = $hotspotRow.find("input[name='hotspotTitle']").val();
+            var hotspotLink = $hotspotRow.find("input[name='hotspotLink']").val();
+            if($.common.isEmpty(hotspotTitle)){
+                $.modal.alertWarning("想法内容不能为空！");
+                return;
+            }
+            var hotTime = $hotspotRow.find("input[name='hotTime']").val();
+            if($.common.isEmpty(hotTime)){
+                $.modal.alertWarning("想法时间不能为空！");
+                return;
+            }
+
+            //callback
+            var id = $hotspotRow.find("input[name='id']").val();
+            var theObject = {
+                id:id,
+                title:hotspotTitle,
+                link:hotspotLink,
+                hotTime:hotTime,
+            };
+            var filter = buildFilter(true);
+            refreshTabAfterAjaxSuccess(hotspotPrefix + "/edit", theObject,filter,'hotspot');
+        })
+
+
+        /**条件过滤**/
+        //按月过滤
+        $("body").on("click",".month-btn a",function () {
+            $(this).addClass("active btn-success").siblings("a").removeClass("active btn-success").addClass("btn-primary");
+            $(this).parent(".month-btn").addClass("active").siblings(".time-range").removeClass("active");
+            $(".time-range").find("input").val("");
+            //显示oper-info
+            $(".oper-info").show();
+
+            //过滤
+            refreshAllTab();
+        })
+
+        //按时间范围过滤
+        $("body").on("click",".time-range-search",function () {
+            var startTime = $("#startTime").val();
+            var endTime = $("#endTime").val();
+            if($.common.isEmpty(startTime) || $.common.isEmpty(endTime)){
+                $.modal.alertWarning("目标范围不能为空！");
+                return;
+            }
+            $(this).parent(".time-range").addClass("active").siblings(".month-btn").removeClass("active");
+            $(".month-btn").find(".btn").removeClass("btn-success active").addClass("btn-primary");
+            //过滤
+            refreshAllTab();
+        })
+        //按是否完成过滤
+        $("body").on("click",".tatus-btn-group button",function () {
+            $(this).removeClass("btn-white").addClass("active btn-success")
+                .siblings("button").removeClass("active btn-success").addClass("btn-white");
+
+            //过滤
+            refreshAllTab();
+        })
+
+        //月操作：复制上月
+        $("body").on("click",".copy-last-month",function () {
+            var $copyDivElem = $(this);
+            $.modal.confirm("确定从上个月复制内容到本月？", function() {
+                var copyType = $copyDivElem.attr("copy-type");
+                var currentShowDate = $("#goal-tab").find(".currentShowDate").text();
+                var data = {
+                    copyType:copyType,
+                    currentShowDate:currentShowDate,
+                }
+                var filter = buildFilter(true);
+                refreshTabAfterAjaxSuccess(prefix + "/copy-last-month", data,filter,copyType);
+            })
+        })
+
+    });
+    
+
+
+</script>
+</body>
+</html>

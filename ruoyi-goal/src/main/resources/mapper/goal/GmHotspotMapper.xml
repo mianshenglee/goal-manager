@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.goal.mapper.GmHotspotMapper">
+    
+    <resultMap type="GmHotspot" id="GmHotspotResult">
+        <result property="id"    column="id"    />
+        <result property="recordVersion"    column="record_version"    />
+        <result property="sysCreateTime"    column="sys_create_time"    />
+        <result property="sysCreateBy"    column="sys_create_by"    />
+        <result property="sysUpdateTime"    column="sys_update_time"    />
+        <result property="sysUpdateBy"    column="sys_update_by"    />
+        <result property="hotTime"    column="hot_time"    />
+        <result property="title"    column="title"    />
+        <result property="link"    column="link"    />
+    </resultMap>
+
+    <sql id="selectGmHotspotVo">
+        select id, record_version, sys_create_time, sys_create_by, sys_update_time, sys_update_by, hot_time, title, link from gm_hotspot
+    </sql>
+
+    <select id="selectGmHotspotList" parameterType="GmHotspot" resultMap="GmHotspotResult">
+        <include refid="selectGmHotspotVo"/>
+        <where>  
+            <if test="recordVersion != null "> and record_version = #{recordVersion}</if>
+            <if test="sysCreateTime != null "> and sys_create_time = #{sysCreateTime}</if>
+            <if test="sysCreateBy != null "> and sys_create_by = #{sysCreateBy}</if>
+            <if test="sysUpdateTime != null "> and sys_update_time = #{sysUpdateTime}</if>
+            <if test="sysUpdateBy != null "> and sys_update_by = #{sysUpdateBy}</if>
+            <if test="hotTime != null "> and DATE_FORMAT(hot_time, '%Y%m' ) = DATE_FORMAT( #{hotTime}, '%Y%m' )</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="params.startTime != null and params.endTime != null "> and hot_time between #{params.startTime} and #{params.endTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectGmHotspotById" parameterType="Long" resultMap="GmHotspotResult">
+        <include refid="selectGmHotspotVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGmHotspot" parameterType="GmHotspot" useGeneratedKeys="true" keyProperty="id">
+        insert into gm_hotspot
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version,</if>
+            <if test="sysCreateTime != null ">sys_create_time,</if>
+            <if test="sysCreateBy != null ">sys_create_by,</if>
+            <if test="sysUpdateTime != null ">sys_update_time,</if>
+            <if test="sysUpdateBy != null ">sys_update_by,</if>
+            <if test="hotTime != null ">hot_time,</if>
+            <if test="title != null  and title != ''">title,</if>
+            <if test="link != null  and link != ''">link,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">#{recordVersion},</if>
+            <if test="sysCreateTime != null ">#{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">#{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">#{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">#{sysUpdateBy},</if>
+            <if test="hotTime != null ">#{hotTime},</if>
+            <if test="title != null  and title != ''">#{title},</if>
+            <if test="link != null  and link != ''">#{link},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGmHotspot" parameterType="GmHotspot">
+        update gm_hotspot
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version = #{recordVersion},</if>
+            <if test="sysCreateTime != null ">sys_create_time = #{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">sys_create_by = #{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">sys_update_time = #{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">sys_update_by = #{sysUpdateBy},</if>
+            <if test="hotTime != null ">hot_time = #{hotTime},</if>
+            <if test="title != null  and title != ''">title = #{title},</if>
+            <if test="link != null  and link != ''">link = #{link},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGmHotspotById" parameterType="Long">
+        delete from gm_hotspot where id = #{id}
+    </delete>
+
+    <delete id="deleteGmHotspotByIds" parameterType="String">
+        delete from gm_hotspot where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

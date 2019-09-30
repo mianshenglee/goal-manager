@@ -1,0 +1,132 @@
+
+<script id="goal-list-row" type="text/x-jsrender" th:fragment="goal-list-add-row">
+    <div class="row goal-list-row">
+        <input name="id" type="hidden">
+        <input name="recordVersion" type="hidden" value="{{:recordVersion}}">
+        <input name="goalPhase" type="hidden" value="{{:goalPhase}}">
+        <input name="goalType" type="hidden" value="{{:goalType}}">
+        <div class="row col-sm-5">
+            <div class="goal-content-div">
+                <span class="badge hidden">extra</span>
+                <span class="goal-content" style="display:none;">{{:goalContent}}</span>
+            </div>
+            <div class="isExtraCheckBox checkbox col-sm-3 m-t-0">
+                <label> <input name="isExtra" class="is-extra" type="checkbox">计划外</label>
+            </div>
+            <input name="goalContent" placeholder="请输入目标内容" class="col-sm-9 form-control " type="text" maxlength="200" required style="width: 75%;margin-top: -8px;">
+        </div>
+        <div class="row col-sm-4">
+            <div class="checkbox col-sm-3 m-t-0">
+                <label> <input name="goal-done" class="goal-done" type="checkbox">完成</label>
+            </div>
+            <div class="col-sm-9">
+                <input name="goalProcess" class="goal-process-slider" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="10" data-slider-value="0"/>
+                <span class="slider-value-span">0</span>
+                <span>%</span>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <div class="goal-time" style="display:none;">{{:curDate}}</div>
+            <input name="goalTime" type="text" class="time-input" data-type="month" placeholder="目标月份" style="padding-left: 3px;" value="{{:curDate}}"/>
+        </div>
+        <div class="col-sm-2">
+            <div style="text-align: center; ">
+                <a class="btn btn-success btn-xs goal-edit" style="display:none;" href="javascript:void(0)">
+                    <i class="fa fa-edit"></i>编辑</a>
+                <a class="btn btn-success btn-xs goal-add-save" href="javascript:void(0)">
+                    <i class="fa fa-save"></i>添加</a>
+                <a class="btn btn-danger btn-xs goal-cancel" href="javascript:void(0)">
+                    <i class="fa fa-remove"></i>取消</a>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script id="idea-list-row" type="text/x-jsrender" th:fragment="idea-list-add-row">
+    <div class="row idea-list-row">
+        <input name="id"  type="hidden">
+        <div class="col-sm-2">
+            <div class="idea-type hidden">--</div>
+            <select name="ideaType">
+                <option value="">--</option>
+                {{for typeList}}
+                <option value="{{:dictValue}}">{{:dictLabel}}</option>
+                {{/for}}
+            </select>
+        </div>
+        <div class="row col-sm-7">
+            <div class="idea-content-div hidden">
+                <span class="idea-content">{{:ideaContent}}</span>
+            </div>
+            <input name="ideaContent" placeholder="请输入想法内容" class="col-sm-9 form-control" type="text" maxlength="200" required style="width: 100%;margin-top: -1px;">
+        </div>
+        <div class="col-sm-1">
+            <div class="idea-time" style="display:none;">{{:curDate}}</div>
+            <input name="ideaTime" type="text" class="time-input" data-type="month" placeholder="目标月份" style="padding-left: 3px;" value="{{:curDate}}"/>
+        </div>
+        <div class="col-sm-2">
+            <div style="text-align: center; ">
+                <a class="btn btn-success btn-xs idea-edit" style="display:none;" href="javascript:void(0)">
+                    <i class="fa fa-edit"></i>编辑</a>
+                <a class="btn btn-success btn-xs idea-add-save" href="javascript:void(0)">
+                    <i class="fa fa-save"></i>添加</a>
+                <a class="btn btn-danger btn-xs idea-cancel" href="javascript:void(0)">
+                    <i class="fa fa-remove"></i>取消</a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="summary-list-row" type="text/x-jsrender" th:fragment="summary-list-add-row">
+    <div class="row summary-list-row">
+        <input name="id" type="hidden">
+        <div class="col-sm-9">
+            <textarea class="summary-input" rows="8"></textarea>
+        </div>
+        <div class="col-sm-1">
+            <input name="summaryTime" type="text" class="time-input" data-type="month" placeholder="所属月份" style="margin-top:80px; padding-left: 3px;" value="{{:curDate}}"/>
+        </div>
+        <div class="col-sm-2">
+            <div style="text-align: center; margin-top:80px; ">
+                <a class="btn btn-success btn-xs summary-save" href="javascript:void(0)">
+                    <i class="fa fa-edit"></i>保存</a>
+                <a class="btn btn-danger btn-xs summary-delete" href="javascript:void(0)">
+                    <i class="fa fa-remove"></i>删除</a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="hotspot-list-row" type="text/x-jsrender" th:fragment="hotspot-list-add-row">
+    <div class="row hotspot-list-row">
+        <input name="id" type="hidden">
+        <div class="row col-sm-5">
+            <div class="hotspot-title-div hidden">
+                <span class="hotspot-title">{{:hotspotTitle}}</span>
+            </div>
+            <input name="hotspotTitle" placeholder="请输入热点标题" class="col-sm-9 form-control" type="text" maxlength="300" required style="width: 100%;margin-top: -1px;">
+        </div>
+        <div class="col-sm-4">
+            <div class="hotspot-link-div">
+                <span class="hotspot-link">{{:hotspotLink}}</span>
+            </div>
+            <input name="hotspotLink" placeholder="请输入热点链接" class="col-sm-9 form-control" type="text" maxlength="200" required style="width: 100%;margin-top: -1px;">
+        </div>
+
+        <div class="col-sm-1">
+            <div class="hotspot-time" style="display:none;">{{:curDate}}</div>
+            <input name="hotTime" type="text" class="time-input" data-type="month" placeholder="所属月份" style="padding-left: 3px;" value="{{:curDate}}"/>
+        </div>
+        <div class="col-sm-2">
+            <div style="text-align: center; ">
+                <a class="btn btn-success btn-xs hotspot-edit" style="display:none;" href="javascript:void(0)">
+                    <i class="fa fa-edit"></i>编辑</a>
+                <a class="btn btn-success btn-xs hotspot-add-save" href="javascript:void(0)">
+                    <i class="fa fa-save"></i>添加</a>
+                <a class="btn btn-danger btn-xs hotspot-cancel" href="javascript:void(0)">
+                    <i class="fa fa-remove"></i>取消</a>
+            </div>
+        </div>
+    </div>
+</script>

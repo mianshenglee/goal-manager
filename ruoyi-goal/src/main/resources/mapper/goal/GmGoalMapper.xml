@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.goal.mapper.GmGoalMapper">
+    
+    <resultMap type="GmGoal" id="GmGoalResult">
+        <result property="id"    column="id"    />
+        <result property="recordVersion"    column="record_version"    />
+        <result property="sysCreateTime"    column="sys_create_time"    />
+        <result property="sysCreateBy"    column="sys_create_by"    />
+        <result property="sysUpdateTime"    column="sys_update_time"    />
+        <result property="sysUpdateBy"    column="sys_update_by"    />
+        <result property="goalPhase"    column="goal_phase"    />
+        <result property="goalTime"    column="goal_time"    />
+        <result property="goalType"    column="goal_type"    />
+        <result property="goalContent"    column="goal_content"    />
+        <result property="process"    column="process"    />
+        <result property="isDeleted"    column="is_deleted"    />
+        <result property="isExtra"    column="is_extra"    />
+    </resultMap>
+
+    <sql id="selectGmGoalVo">
+        select id, record_version, sys_create_time, sys_create_by, sys_update_time, sys_update_by, goal_phase, goal_time, goal_type, goal_content, process, is_deleted, is_extra from gm_goal
+    </sql>
+
+    <select id="selectGmGoalList" parameterType="GmGoal" resultMap="GmGoalResult">
+        <include refid="selectGmGoalVo"/>
+        <where>  
+            <if test="recordVersion != null "> and record_version = #{recordVersion}</if>
+            <if test="sysCreateTime != null "> and sys_create_time = #{sysCreateTime}</if>
+            <if test="sysCreateBy != null "> and sys_create_by = #{sysCreateBy}</if>
+            <if test="sysUpdateTime != null "> and sys_update_time = #{sysUpdateTime}</if>
+            <if test="sysUpdateBy != null "> and sys_update_by = #{sysUpdateBy}</if>
+            <if test="goalPhase != null  and goalPhase != ''"> and goal_phase = #{goalPhase}</if>
+            <if test="goalTime != null "> and DATE_FORMAT(goal_time, '%Y%m' ) = DATE_FORMAT( #{goalTime}, '%Y%m' )</if>
+            <if test="goalType != null  and goalType != ''"> and goal_type = #{goalType}</if>
+            <if test="goalContent != null  and goalContent != ''"> and goal_content = #{goalContent}</if>
+            <if test="process != null "> and process = #{process}</if>
+            <if test="isDeleted != null  and isDeleted != ''"> and is_deleted = #{isDeleted}</if>
+            <if test="isExtra != null  and isExtra != ''"> and is_extra = #{isExtra}</if>
+        </where>
+        order by goal_time
+    </select>
+
+    <select id="selectGmGoalListByCondition" parameterType="GoalFilterCondition" resultMap="GmGoalResult">
+        <include refid="selectGmGoalVo"/>
+        <where>
+            <if test="recordVersion != null "> and record_version = #{recordVersion}</if>
+            <if test="sysCreateTime != null "> and sys_create_time = #{sysCreateTime}</if>
+            <if test="sysCreateBy != null "> and sys_create_by = #{sysCreateBy}</if>
+            <if test="sysUpdateTime != null "> and sys_update_time = #{sysUpdateTime}</if>
+            <if test="sysUpdateBy != null "> and sys_update_by = #{sysUpdateBy}</if>
+            <if test="goalPhase != null  and goalPhase != ''"> and goal_phase = #{goalPhase}</if>
+            <if test="goalTime != null "> and DATE_FORMAT(goal_time, '%Y%m' ) = DATE_FORMAT( #{goalTime}, '%Y%m' )</if>
+            <if test="goalStartTime != null and goalEndTime != null "> and goal_time between #{goalStartTime} and #{goalEndTime}</if>
+            <if test="goalType != null  and goalType != ''"> and goal_type = #{goalType}</if>
+            <if test="goalContent != null  and goalContent != ''"> and goal_content = #{goalContent}</if>
+            <if test="doneTag == 'done' "> and process = 100</if>
+            <if test="doneTag == 'notDone' "> and process &lt; 100 </if>
+            <if test="process != null "> and process = #{process}</if>
+            <if test="isDeleted != null  and isDeleted != ''"> and is_deleted = #{isDeleted}</if>
+            <if test="isExtra != null  and isExtra != ''"> and is_extra = #{isExtra}</if>
+        </where>
+        order by goal_time
+    </select>
+    
+    <select id="selectGmGoalById" parameterType="Long" resultMap="GmGoalResult">
+        <include refid="selectGmGoalVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGmGoal" parameterType="GmGoal" useGeneratedKeys="true" keyProperty="id">
+        insert into gm_goal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version,</if>
+            <if test="sysCreateTime != null ">sys_create_time,</if>
+            <if test="sysCreateBy != null ">sys_create_by,</if>
+            <if test="sysUpdateTime != null ">sys_update_time,</if>
+            <if test="sysUpdateBy != null ">sys_update_by,</if>
+            <if test="goalPhase != null  and goalPhase != ''">goal_phase,</if>
+            <if test="goalTime != null ">goal_time,</if>
+            <if test="goalType != null  and goalType != ''">goal_type,</if>
+            <if test="goalContent != null  and goalContent != ''">goal_content,</if>
+            <if test="process != null ">process,</if>
+            <if test="isDeleted != null  and isDeleted != ''">is_deleted,</if>
+            <if test="isExtra != null  and isExtra != ''">is_extra,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">#{recordVersion},</if>
+            <if test="sysCreateTime != null ">#{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">#{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">#{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">#{sysUpdateBy},</if>
+            <if test="goalPhase != null  and goalPhase != ''">#{goalPhase},</if>
+            <if test="goalTime != null ">#{goalTime},</if>
+            <if test="goalType != null  and goalType != ''">#{goalType},</if>
+            <if test="goalContent != null  and goalContent != ''">#{goalContent},</if>
+            <if test="process != null ">#{process},</if>
+            <if test="isDeleted != null  and isDeleted != ''">#{isDeleted},</if>
+            <if test="isExtra != null  and isExtra != ''">#{isExtra},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGmGoal" parameterType="GmGoal">
+        update gm_goal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version = #{recordVersion} + 1,</if>
+            <if test="sysCreateTime != null ">sys_create_time = #{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">sys_create_by = #{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">sys_update_time = #{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">sys_update_by = #{sysUpdateBy},</if>
+            <if test="goalPhase != null  and goalPhase != ''">goal_phase = #{goalPhase},</if>
+            <if test="goalTime != null ">goal_time = #{goalTime},</if>
+            <if test="goalType != null  and goalType != ''">goal_type = #{goalType},</if>
+            <if test="goalContent != null  and goalContent != ''">goal_content = #{goalContent},</if>
+            <if test="process != null ">process = #{process},</if>
+            <if test="isDeleted != null  and isDeleted != ''">is_deleted = #{isDeleted},</if>
+            <if test="isExtra != null  and isExtra != ''">is_extra = #{isExtra},</if>
+        </trim>
+        where id = #{id} and record_version=#{recordVersion}
+    </update>
+
+    <delete id="deleteGmGoalById" parameterType="Long">
+        delete from gm_goal where id = #{id}
+    </delete>
+
+    <delete id="deleteGmGoalByIds" parameterType="String">
+        update gm_goal set is_deleted = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

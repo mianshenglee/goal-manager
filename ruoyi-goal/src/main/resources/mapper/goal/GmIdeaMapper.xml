@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.goal.mapper.GmIdeaMapper">
+    
+    <resultMap type="GmIdea" id="GmIdeaResult">
+        <result property="id"    column="id"    />
+        <result property="recordVersion"    column="record_version"    />
+        <result property="sysCreateTime"    column="sys_create_time"    />
+        <result property="sysCreateBy"    column="sys_create_by"    />
+        <result property="sysUpdateTime"    column="sys_update_time"    />
+        <result property="sysUpdateBy"    column="sys_update_by"    />
+        <result property="content"    column="content"    />
+        <result property="type"    column="type"    />
+        <result property="ideaTime"    column="idea_time"    />
+    </resultMap>
+
+    <sql id="selectGmIdeaVo">
+        select id, record_version, sys_create_time, sys_create_by, sys_update_time, sys_update_by, content, type, idea_time from gm_idea
+    </sql>
+
+    <select id="selectGmIdeaList" parameterType="GmIdea" resultMap="GmIdeaResult">
+        <include refid="selectGmIdeaVo"/>
+        <where>  
+            <if test="recordVersion != null "> and record_version = #{recordVersion}</if>
+            <if test="sysCreateTime != null "> and sys_create_time = #{sysCreateTime}</if>
+            <if test="sysCreateBy != null "> and sys_create_by = #{sysCreateBy}</if>
+            <if test="sysUpdateTime != null "> and sys_update_time = #{sysUpdateTime}</if>
+            <if test="sysUpdateBy != null "> and sys_update_by = #{sysUpdateBy}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="ideaTime != null "> and DATE_FORMAT(idea_time, '%Y%m' ) = DATE_FORMAT( #{ideaTime}, '%Y%m' )</if>
+            <if test="params.startTime != null and params.endTime != null "> and idea_time between #{params.startTime} and #{params.endTime}</if>
+        </where>
+        order by idea_time
+    </select>
+    
+    <select id="selectGmIdeaById" parameterType="Long" resultMap="GmIdeaResult">
+        <include refid="selectGmIdeaVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGmIdea" parameterType="GmIdea" useGeneratedKeys="true" keyProperty="id">
+        insert into gm_idea
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version,</if>
+            <if test="sysCreateTime != null ">sys_create_time,</if>
+            <if test="sysCreateBy != null ">sys_create_by,</if>
+            <if test="sysUpdateTime != null ">sys_update_time,</if>
+            <if test="sysUpdateBy != null ">sys_update_by,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="ideaTime != null ">idea_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordVersion != null ">#{recordVersion},</if>
+            <if test="sysCreateTime != null ">#{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">#{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">#{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">#{sysUpdateBy},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="ideaTime != null ">#{ideaTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGmIdea" parameterType="GmIdea">
+        update gm_idea
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordVersion != null ">record_version = #{recordVersion},</if>
+            <if test="sysCreateTime != null ">sys_create_time = #{sysCreateTime},</if>
+            <if test="sysCreateBy != null ">sys_create_by = #{sysCreateBy},</if>
+            <if test="sysUpdateTime != null ">sys_update_time = #{sysUpdateTime},</if>
+            <if test="sysUpdateBy != null ">sys_update_by = #{sysUpdateBy},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="ideaTime != null ">idea_time = #{ideaTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGmIdeaById" parameterType="Long">
+        delete from gm_idea where id = #{id}
+    </delete>
+
+    <delete id="deleteGmIdeaByIds" parameterType="String">
+        delete from gm_idea where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

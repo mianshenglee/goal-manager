@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('目标列表')"/>
+    <link th:href="@{/goal/css/goal.css}" rel="stylesheet"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 goal-block">
+            <div class="col-sm-4">
+                <div class="card bg-primary">
+                    <div class="card-body">
+                        <div class="card-center">
+                            <p class="h5 m-t-0">目标数</p>
+                            <p class="h3 m-t-0">10个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card bg-success">
+                    <div class="card-body">
+                        <div class="card-center">
+                            <p class="h5 m-t-0">完成数</p>
+                            <p class="h3 m-t-0">3个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card bg-danger">
+                    <div class="card-body">
+                        <div class="card-center">
+                            <p class="h5 m-t-0">删除数</p>
+                            <p class="h3 m-t-0">1个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul class="goal-filter-select-ul">
+                    <li><a class="btn btn-primary"><i class="fa fa-angle-left"></i>&nbsp;上个月</a></li>
+                    <li><a class="btn btn-success"><i class="fa fa-angle-up"></i>&nbsp;当前月</a></li>
+                    <li><a class="btn btn-primary"><i class="fa fa-angle-right"></i>&nbsp;下个月</a></li>
+                    <li class="select-time goal-filter-select-time">
+                        <p class="goal-filter-select-time-text">时间范围：</p>
+                        <input type="text" class="time-input" id="startTime" placeholder="开始月份"
+                               name="params[beginSysCreateTime]"/>
+                        <span>~</span>
+                        <input type="text" class="time-input" id="endTime" placeholder="结束月份"
+                               name="params[endSysCreateTime]"/>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-sm-12 goal-block">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#goal-tab" data-toggle="tab">目标</a></li>
+                <li><a href="#idea-tab" data-toggle="tab">想法</a></li>
+                <li><a href="#summary-tab" data-toggle="tab">总结</a></li>
+                <li><a href="#hotspot-tab" data-toggle="tab">热点</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="tab-pane active" id="goal-tab">
+                    <div class="goal-btn-group clearfix">
+                        <div class="btn-group pull-right">
+                            <button class="btn btn-success" type="button">全部</button>
+                            <button class="btn btn-white" type="button">已完成</button>
+                            <button class="btn btn-white" type="button">未完成</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>技能目标</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">目标1</div>
+                                    <div class="col-sm-3">
+                                        <div class="checkbox col-sm-4 m-t-0">
+                                            <label> <input type="checkbox" value="">完成</label>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                                60%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">2019-09</div>
+                                    <div class="col-sm-3">
+                                        <td style="text-align: center; ">
+                                            <a class="btn btn-success btn-xs " href="javascript:void(0)">
+                                                <i class="fa fa-edit"></i>编辑</a>
+                                            <a class="btn btn-danger btn-xs " href="javascript:void(0)">
+                                                <i class="fa fa-remove"></i>删除</a>
+                                            <a class="btn btn-info btn-xs " href="javascript:void(0)">
+                                                <i class="fa fa-key"></i>重置</a>
+                                        </td>
+                                    </div>
+                                </div>
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row"><a class="center-icon"><i class="fa fa-plus fa-1-5x"></i></a></i></div>
+                            </div>
+                        </div>
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>学习目标</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row goal-list-row">
+                                    <div class="col-sm-3">aaa</div>
+                                    <div class="col-sm-3">bbb</div>
+                                    <div class="col-sm-3">ccc</div>
+                                    <div class="col-sm-3">ddd</div>
+                                </div>
+                                <div class="row"><a class="center-icon"><i class="fa fa-plus fa-1-5x"></i></a></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--<div class="goal-list">-->
+                    <!--<div class="btn-group-sm" id="toolbar" role="group">-->
+                    <!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="goal:month:add">-->
+                    <!--<i class="fa fa-plus"></i> 添加-->
+                    <!--</a>-->
+                    <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()"-->
+                    <!--shiro:hasPermission="goal:month:edit">-->
+                    <!--<i class="fa fa-edit"></i> 修改-->
+                    <!--</a>-->
+                    <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"-->
+                    <!--shiro:hasPermission="goal:month:remove">-->
+                    <!--<i class="fa fa-remove"></i> 删除-->
+                    <!--</a>-->
+                    <!--<a class="btn btn-warning" onclick="$.table.exportExcel()"-->
+                    <!--shiro:hasPermission="goal:month:export">-->
+                    <!--<i class="fa fa-download"></i> 导出-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--<div class="col-sm-12 select-table table-striped">-->
+                    <!--<table id="bootstrap-table" data-mobile-responsive="true"></table>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                </div>
+                <div class="tab-pane" id="idea-tab">...</div>
+                <div class="tab-pane" id="summary-tab">...</div>
+                <div class="tab-pane" id="hotspot-tab">...</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('goal:month:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('goal:month:remove')}]];
+    var goalPhaseDatas = [[${@dict.getType('goal_phase')}]];
+    var goalTypeDatas = [[${@dict.getType('goal_type')}]];
+    var isDeletedDatas = [[${@dict.getType('is_deleted')}]];
+    var isExtraDatas = [[${@dict.getType('is_extra')}]];
+    var prefix = ctx + "goal/month";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "目标",
+            showSearch: false,
+            showPageGo: false,
+            showRefresh: true,
+            showColumns: false,
+            showToggle: false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '记录ID',
+                    visible: false
+                },
+                {
+                    field: 'recordVersion',
+                    title: '记录'
+                },
+                {
+                    field: 'sysCreateTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'sysCreateBy',
+                    title: '创建人'
+                },
+                {
+                    field: 'sysUpdateTime',
+                    title: '更新时间'
+                },
+                {
+                    field: 'sysUpdateBy',
+                    title: '更新人'
+                },
+                {
+                    field: 'goalPhase',
+                    title: '目标阶段',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(goalPhaseDatas, value);
+                    }
+
+                },
+                {
+                    field: 'goalTime',
+                    title: '目标所属时间'
+                },
+                {
+                    field: 'goalType',
+                    title: '目标类型',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(goalTypeDatas, value);
+                    }
+                },
+                {
+                    field: 'goalContent',
+                    title: '目标内容'
+                },
+                {
+                    field: 'process',
+                    title: '目标完成进度'
+                },
+                {
+                    field: 'isDeleted',
+                    title: '是否删除',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(isDeletedDatas, value);
+                    }
+                },
+                {
+                    field: 'isExtra',
+                    title: '是否计划外的',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(isExtraDatas, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>
