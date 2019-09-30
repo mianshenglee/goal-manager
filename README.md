@@ -15,6 +15,26 @@
 - 月总结添加、编辑、删除
 - 月热点记录的添加、编辑、删除
 
+## 截图
+
+- 目标管理
+
+![目标管理](https://oscimg.oschina.net/oscnet/37aa1916629c86abf21f7ae3b36e14f73d3.jpg)
+
+- 想法
+
+![想法](https://oscimg.oschina.net/oscnet/d133073772a3273e2bb99340e53c68a09e6.jpg)
+
+- 总结
+
+![总结](https://oscimg.oschina.net/oscnet/88267b1d79d3f3f0c90d575a029e5a1b56e.jpg)
+
+- 热点
+
+![热点](https://oscimg.oschina.net/oscnet/f95935fd18540573565bdcda369f8db4237.jpg)
+
+
+
 ## 未来设想
 
 - 添加年目标及分解到月目标功能
