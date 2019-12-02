@@ -18,7 +18,7 @@
     <properties>
         <!--jsw daemon -->
         <daemon-name>goal-manager</daemon-name>
-        <daemon-mainClass>me.mason.RuoYiApplication</daemon-mainClass>
+        <daemon-mainClass>com.ruoyi.RuoYiApplication</daemon-mainClass>
         <daemon-JAVA_Xms>512M</daemon-JAVA_Xms>
         <daemon-JAVA_Xmx>512M</daemon-JAVA_Xmx>
         <daemon-JAVA_OPS></daemon-JAVA_OPS>
