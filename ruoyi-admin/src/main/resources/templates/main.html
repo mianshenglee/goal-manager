@@ -260,7 +260,6 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </div>
@@ -722,7 +721,7 @@
             $(".oper-info").show();
 
             //过滤
-            refreshAllTab();
+            refreshAllTab(false);
         })
 
         //按时间范围过滤
@@ -736,7 +735,7 @@
             $(this).parent(".time-range").addClass("active").siblings(".month-btn").removeClass("active");
             $(".month-btn").find(".btn").removeClass("btn-success active").addClass("btn-primary");
             //过滤
-            refreshAllTab();
+            refreshAllTab(false);
         })
         //按是否完成过滤
         $("body").on("click",".tatus-btn-group button",function () {
@@ -744,7 +743,7 @@
                 .siblings("button").removeClass("active btn-success").addClass("btn-white");
 
             //过滤
-            refreshAllTab();
+            refreshAllTab(true);
         })
 
         //月操作：复制上月
@@ -763,8 +762,6 @@
         })
 
     });
-
-
 
 </script>
 </body>

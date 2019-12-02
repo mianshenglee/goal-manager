@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ruoyi</artifactId>
-        <groupId>com.ruoyi</groupId>
-        <version>4.0.0</version>
+        <groupId>me.mason</groupId>
+        <artifactId>goal-manager</artifactId>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
@@ -18,7 +18,7 @@
     <properties>
         <!--jsw daemon -->
         <daemon-name>goal-manager</daemon-name>
-        <daemon-mainClass>com.ruoyi.RuoYiApplication</daemon-mainClass>
+        <daemon-mainClass>me.mason.RuoYiApplication</daemon-mainClass>
         <daemon-JAVA_Xms>512M</daemon-JAVA_Xms>
         <daemon-JAVA_Xmx>512M</daemon-JAVA_Xmx>
         <daemon-JAVA_OPS></daemon-JAVA_OPS>
@@ -70,25 +70,25 @@
 
 		<!-- 核心模块-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
+            <groupId>me.mason</groupId>
             <artifactId>ruoyi-framework</artifactId>
         </dependency>
         
         <!-- 定时任务-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
+            <groupId>me.mason</groupId>
             <artifactId>ruoyi-quartz</artifactId>
         </dependency>
         
         <!-- 代码生成-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
+            <groupId>me.mason</groupId>
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
 
         <!-- 目标模块-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
+            <groupId>me.mason</groupId>
             <artifactId>ruoyi-goal</artifactId>
         </dependency>
     </dependencies>

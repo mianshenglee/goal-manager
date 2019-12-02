@@ -272,9 +272,9 @@ function buildFilter(showCurrent) {
     return filter;
 }
 
-function refreshAllTab() {
+function refreshAllTab(showCurrent) {
     //过滤
-    var filter = buildFilter();
+    var filter = buildFilter(showCurrent);
     refreshGoalTab(filter);
     refreshIdeaTab(filter);
     refreshSummaryTab(filter);

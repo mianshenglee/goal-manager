@@ -4,16 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-    <groupId>com.ruoyi</groupId>
-    <artifactId>ruoyi</artifactId>
-    <version>4.0.0</version>
+    <groupId>me.mason</groupId>
+    <artifactId>goal-manager</artifactId>
+    <version>1.0.0</version>
 
-    <name>ruoyi</name>
-	<url>http://www.ruoyi.vip</url>
-    <description>若依管理系统</description>
+    <name>goal-manager</name>
+    <description>目标管理系统</description>
     
     <properties>
-	    <ruoyi.version>4.0.0</ruoyi.version>
+	    <goal.version>1.0.0</goal.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
@@ -178,44 +177,44 @@
             
             <!-- 定时任务-->
 			<dependency>
-				<groupId>com.ruoyi</groupId>
+				<groupId>me.mason</groupId>
 				<artifactId>ruoyi-quartz</artifactId>
-				<version>${ruoyi.version}</version>
+				<version>${goal.version}</version>
 			</dependency>
 	
 			<!-- 代码生成-->
 			<dependency>
-				<groupId>com.ruoyi</groupId>
+				<groupId>me.mason</groupId>
 				<artifactId>ruoyi-generator</artifactId>
-				<version>${ruoyi.version}</version>
+				<version>${goal.version}</version>
 			</dependency>
 			
 			<!-- 核心模块-->
 			<dependency>
-				<groupId>com.ruoyi</groupId>
+				<groupId>me.mason</groupId>
 				<artifactId>ruoyi-framework</artifactId>
-				<version>${ruoyi.version}</version>
+				<version>${goal.version}</version>
 			</dependency>
 			
 	        <!-- 系统模块-->
 			<dependency>
-				<groupId>com.ruoyi</groupId>
+				<groupId>me.mason</groupId>
 				<artifactId>ruoyi-system</artifactId>
-				<version>${ruoyi.version}</version>
+				<version>${goal.version}</version>
 			</dependency>
 			
 			<!-- 通用工具-->
 			<dependency>
-				<groupId>com.ruoyi</groupId>
+				<groupId>me.mason</groupId>
 				<artifactId>ruoyi-common</artifactId>
-				<version>${ruoyi.version}</version>
+				<version>${goal.version}</version>
 			</dependency>
 
 			<!-- 目标模块-->
 			<dependency>
-				<groupId>com.ruoyi</groupId>
+				<groupId>me.mason</groupId>
 				<artifactId>ruoyi-goal</artifactId>
-				<version>${ruoyi.version}</version>
+				<version>${goal.version}</version>
 			</dependency>
         </dependencies>
     </dependencyManagement>
