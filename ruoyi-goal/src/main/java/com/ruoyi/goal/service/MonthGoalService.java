@@ -32,7 +32,7 @@ import java.util.Map;
 public class MonthGoalService {
 
     @Autowired
-    private IGmIdeaService iGmIdeaService;
+    private IGmIdeaService gmIdeaService;
 
     @Autowired
     private IGmGoalService gmGoalService;
@@ -107,7 +107,7 @@ public class MonthGoalService {
         if (StringUtils.isNotEmpty(timeRange)) {
             gmIdea.setParams(getTimeRangeParam(timeRange));
         }
-        List<GmIdea> gmIdeas = iGmIdeaService.selectGmIdeaList(gmIdea);
+        List<GmIdea> gmIdeas = gmIdeaService.selectGmIdeaList(gmIdea);
 
         return gmIdeas;
     }
@@ -170,7 +170,7 @@ public class MonthGoalService {
         GmIdea gmIdea = new GmIdea();
         gmIdea.setSysCreateBy(ShiroUtils.getLoginName());
         gmIdea.setIdeaTime(DateUtils.getNowDate());
-        int ideaCount = iGmIdeaService.selectGmIdeaList(gmIdea).size();
+        int ideaCount = gmIdeaService.selectGmIdeaList(gmIdea).size();
         //热点数
         GmHotspot gmHotspot = new GmHotspot();
         gmHotspot.setSysCreateBy(ShiroUtils.getLoginName());
@@ -254,5 +254,66 @@ public class MonthGoalService {
         }
 
         return goalFilter;
+    }
+
+    public void copylastMonthHotspot(Date currentDate) {
+        Date lastMonth;GmHotspot gmHotspot = new GmHotspot();
+        lastMonth = DateUtils.addMonths(currentDate, -1);
+        gmHotspot.setSysCreateBy(ShiroUtils.getLoginName());
+        gmHotspot.setHotTime(lastMonth);
+        List<GmHotspot> gmHotspots = gmHotspotService.selectGmHotspotList(gmHotspot);
+        for (GmHotspot hotspot : gmHotspots) {
+            hotspot.setId(null);
+            hotspot.setRecordVersion(1L);
+            hotspot.setHotTime(currentDate);
+            hotspot.setSysCreateTime(DateUtils.getNowDate());
+            hotspot.setSysUpdateTime(DateUtils.getNowDate());
+            gmHotspotService.insertGmHotspot(hotspot);
+        }
+    }
+
+    public void copyLastMonthSummary(Date currentDate) {
+        Date lastMonth;GmSummary gmSummary = new GmSummary();
+        lastMonth = DateUtils.addMonths(currentDate, -1);
+        gmSummary.setSysCreateBy(ShiroUtils.getLoginName());
+        gmSummary.setSummaryTime(lastMonth);
+        List<GmSummary> gmSummaries = gmSummaryService.selectGmSummaryList(gmSummary);
+        for (GmSummary summary : gmSummaries) {
+            summary.setId(null);
+            summary.setRecordVersion(1L);
+            summary.setSummaryTime(currentDate);
+            summary.setSysCreateTime(DateUtils.getNowDate());
+            summary.setSysUpdateTime(DateUtils.getNowDate());
+            gmSummaryService.insertGmSummary(summary);
+        }
+    }
+
+    public void copyLastMonthIdea(Date currentDate) {
+        GmIdea gmIdea = new GmIdea();
+        Date lastMonth = DateUtils.addMonths(currentDate, -1);
+        gmIdea.setSysCreateBy(ShiroUtils.getLoginName());
+        gmIdea.setIdeaTime(lastMonth);
+        List<GmIdea> gmIdeas = gmIdeaService.selectGmIdeaList(gmIdea);
+        for (GmIdea idea : gmIdeas) {
+            idea.setId(null);
+            idea.setRecordVersion(1L);
+            idea.setIdeaTime(currentDate);
+            idea.setSysCreateTime(DateUtils.getNowDate());
+            idea.setSysUpdateTime(DateUtils.getNowDate());
+            gmIdeaService.insertGmIdea(idea);
+        }
+    }
+
+    public void copyLastMonthGoal(String currentShowDate, Date currentDate) throws ParseException {
+        GoalFilterCondition goalFilterCondition = buildFilterGmGoal(GoalConstants.TAG_PREV, null, GoalConstants.TAG_NOTDONE,currentShowDate);
+        List<GmGoal> gmGoals = gmGoalService.selectGmGoalListByCondition(goalFilterCondition);
+        for (GmGoal goal : gmGoals) {
+            goal.setId(null);
+            goal.setRecordVersion(1L);
+            goal.setGoalTime(currentDate);
+            goal.setSysCreateTime(DateUtils.getNowDate());
+            goal.setSysUpdateTime(DateUtils.getNowDate());
+            gmGoalService.insertGmGoal(goal);
+        }
     }
 }

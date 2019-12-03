@@ -229,65 +229,23 @@ public class GmGoalController extends BaseController {
         Date currentDate = DateUtils.parseDate(currentShowDate, DateUtils.YYYY_MM);
         switch (copyType){
             case GoalConstants.TABTYPE_GOAL:
-                GoalFilterCondition goalFilterCondition = monthGoalService.buildFilterGmGoal(GoalConstants.TAG_PREV, null, GoalConstants.TAG_NOTDONE,currentShowDate);
-                List<GmGoal> gmGoals = gmGoalService.selectGmGoalListByCondition(goalFilterCondition);
-                for (GmGoal goal : gmGoals) {
-                    goal.setId(null);
-                    goal.setRecordVersion(1L);
-                    goal.setGoalTime(currentDate);
-                    goal.setSysCreateTime(DateUtils.getNowDate());
-                    goal.setSysUpdateTime(DateUtils.getNowDate());
-                    gmGoalService.insertGmGoal(goal);
-                }
+                monthGoalService.copyLastMonthGoal(currentShowDate, currentDate);
                 break;
             case GoalConstants.TABTYPE_IDEA:
-                GmIdea gmIdea = new GmIdea();
-                Date lastMonth = DateUtils.addMonths(currentDate, -1);
-                gmIdea.setSysCreateBy(ShiroUtils.getLoginName());
-                gmIdea.setIdeaTime(lastMonth);
-                List<GmIdea> gmIdeas = gmIdeaService.selectGmIdeaList(gmIdea);
-                for (GmIdea idea : gmIdeas) {
-                    idea.setId(null);
-                    idea.setRecordVersion(1L);
-                    idea.setIdeaTime(currentDate);
-                    idea.setSysCreateTime(DateUtils.getNowDate());
-                    idea.setSysUpdateTime(DateUtils.getNowDate());
-                    gmIdeaService.insertGmIdea(idea);
-                }
+                monthGoalService.copyLastMonthIdea(currentDate);
+                Date lastMonth;
                 break;
             case GoalConstants.TABTYPE_SUMMARY:
-                GmSummary gmSummary = new GmSummary();
-                lastMonth = DateUtils.addMonths(currentDate, -1);
-                gmSummary.setSysCreateBy(ShiroUtils.getLoginName());
-                gmSummary.setSummaryTime(lastMonth);
-                List<GmSummary> gmSummaries = gmSummaryService.selectGmSummaryList(gmSummary);
-                for (GmSummary summary : gmSummaries) {
-                    summary.setId(null);
-                    summary.setRecordVersion(1L);
-                    summary.setSummaryTime(currentDate);
-                    summary.setSysCreateTime(DateUtils.getNowDate());
-                    summary.setSysUpdateTime(DateUtils.getNowDate());
-                    gmSummaryService.insertGmSummary(summary);
-                }
+                monthGoalService.copyLastMonthSummary(currentDate);
                 break;
             case GoalConstants.TABTYPE_HOTSPOT:
-                GmHotspot gmHotspot = new GmHotspot();
-                lastMonth = DateUtils.addMonths(currentDate, -1);
-                gmHotspot.setSysCreateBy(ShiroUtils.getLoginName());
-                gmHotspot.setHotTime(lastMonth);
-                List<GmHotspot> gmHotspots = gmHotspotService.selectGmHotspotList(gmHotspot);
-                for (GmHotspot hotspot : gmHotspots) {
-                    hotspot.setId(null);
-                    hotspot.setRecordVersion(1L);
-                    hotspot.setHotTime(currentDate);
-                    hotspot.setSysCreateTime(DateUtils.getNowDate());
-                    hotspot.setSysUpdateTime(DateUtils.getNowDate());
-                    gmHotspotService.insertGmHotspot(hotspot);
-                }
+                monthGoalService.copylastMonthHotspot(currentDate);
                 break;
         }
 
         return success();
     }
+
+
 
 }
